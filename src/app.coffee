@@ -1,12 +1,10 @@
 express = require 'express'
 app = express()
 
-app.post('/scrape', (request, response) ->
-  body = 'Hello world'
-
-  response.setHeader 'Content-Type', 'text/json'
-  response.setHeader 'Content-Length', body.length
-  response.end body
+app.get('/scrape', (request, response) ->
+  body = { "test": "foo"}
+  response.type 'json'
+  response.json body
   console.log "Got request"
 )
 
