@@ -1,4 +1,6 @@
 express = require 'express'
+readability = require 'readabilitySAX'
+
 app = express()
 
 app.get('/scrape', (request, response) ->
