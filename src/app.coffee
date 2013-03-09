@@ -9,7 +9,7 @@ app = express()
 app.get('/scrape', (request, response) ->
   url = request.query.url
 
-  parsedCallback = (readable_data) ->
+  bodyWasParsed = (readable_data) ->
     response.json readable_data
 
   parseResponse = (data) ->
@@ -18,7 +18,7 @@ app.get('/scrape', (request, response) ->
     if data.error
       response.json data
     else
-      stream = new readability.WritableStream({}, parsedCallback)
+      stream = new readability.WritableStream({}, bodyWasParsed)
       stream.write(data)
       stream.end()
 
