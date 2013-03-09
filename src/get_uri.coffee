@@ -15,7 +15,7 @@ class GetURI
 
     request(uri, (error, response, body) =>
       if error?
-        callbackFn @onErr("An error occurred in fetching: #{error}")
+        callbackFn @onErr(error)
       else if response.statusCode != 200
         callbackFn @onErr("Could not grab URI: Status #{response.statusCode}")
       else
