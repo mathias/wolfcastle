@@ -1,15 +1,28 @@
 express = require 'express'
 readability = require 'readabilitySAX'
 
+GetURI = require './get_uri'
+get_uri = new GetURI
+
 app = express()
 
 app.get('/scrape', (request, response) ->
   url = request.query.url
 
-  body = { "test": "foo"}
-  response.type 'json'
-  response.json body
-  console.log "Got request"
+  parsedCallback = (readable_data) ->
+    response.json readable_data
+
+  parseResponse = (data) ->
+    response.type 'json'
+
+    if data.error
+      response.json data
+    else
+      stream = new readability.WritableStream({}, parsedCallback)
+      stream.write(data)
+      stream.end()
+
+  get_uri.fetch(url, parseResponse)
 )
 
 app.listen(4000)
