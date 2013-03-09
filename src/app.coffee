@@ -4,6 +4,8 @@ readability = require 'readabilitySAX'
 app = express()
 
 app.get('/scrape', (request, response) ->
+  url = request.query.url
+
   body = { "test": "foo"}
   response.type 'json'
   response.json body
