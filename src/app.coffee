@@ -9,6 +9,8 @@ app = express()
 app.get('/scrape', (request, response) ->
   url = request.query.url
 
+  console.log "Handling request for #{url}"
+
   bodyWasParsed = (readable_data) ->
     response.json readable_data
 
