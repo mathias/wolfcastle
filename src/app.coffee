@@ -7,7 +7,7 @@ get_uri = new GetURI
 app = express()
 
 app.get('/scrape', (request, response) ->
-  url = request.query.url
+  url = decodeURIComponent(request.query.url)
 
   console.log "Handling request for #{url}"
 
