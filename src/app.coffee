@@ -1,30 +1,39 @@
 express = require 'express'
 readability = require 'readabilitySAX'
+_ = require 'underscore'
+
+isDefined = (value) ->
+  !(_.isNull value) && !(_.isUndefined value)
 
 GetURI = require './get_uri'
-get_uri = new GetURI
+getUri = new GetURI
 
 app = express()
 
-app.get('/scrape', (request, response) ->
-  url = decodeURIComponent(request.query.url)
+app.get '/scrape', (request, response) ->
+  if isDefined request.query.url
+    url = decodeURIComponent(request.query.url)
+    console.log "Handling request for #{url}"
 
-  console.log "Handling request for #{url}"
+    bodyWasParsed = (readableData) ->
+      response.json readableData
 
-  bodyWasParsed = (readable_data) ->
-    response.json readable_data
+    parseResponse = (data) ->
+      response.type 'json'
 
-  parseResponse = (data) ->
-    response.type 'json'
+      if data.error
+        response.json data
+      else
+        stream = new readability.WritableStream({}, bodyWasParsed)
+        stream.write(data)
+        stream.end()
 
-    if data.error
-      response.json data
-    else
-      stream = new readability.WritableStream({}, bodyWasParsed)
-      stream.write(data)
-      stream.end()
+    getUri.fetch(url, parseResponse)
+  else
+    console.error "Bad request for #{request.url}"
+    response.type = 'json'
+    response.status 422
+    response.json {error: "Unproccessable Entity."}
 
-  get_uri.fetch(url, parseResponse)
-)
 
 app.listen(4000)
